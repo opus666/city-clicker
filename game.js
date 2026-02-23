@@ -1,0 +1,1 @@
+[GAME_JS_CONTENT]
