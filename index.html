@@ -1,1 +1,382 @@
-[INDEX_HTML_CONTENT]
+<html lang="ru"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Builder Clicker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+<style id="antigravity-scroll-lock-style">
+  html:root body.antigravity-scroll-lock {
+    overflow: hidden !important;
+  }
+</style><style>
+  body::-webkit-scrollbar {
+    display: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
+  }
+</style></head>
+
+<body class="antigravity-scroll-lock">
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">🏙️ City Clicker</span>
+      <div class="prestige-badge" id="prestigeBadge" style="display:none">✨ Престиж <span id="prestigeCount">0</span>
+      </div>
+    </div>
+    
+    <div class="header-center">
+      <div class="coin-display"><span class="coin-icon">💰</span><span id="coinCount">100</span><span class="coin-label">монет</span></div>
+      <div class="cps-display"><span id="cpsCount">0</span><span class="cps-label">/сек</span></div>
+    </div>
+    <div class="header-dm">
+      <div class="dm-display" title="Тёмная Материя" style="display:none" id="dmBadge"><span class="dm-icon">🌌</span><span id="dmCount">0</span></div>
+      <div class="ts-display" title="Осколки Времени" style="display:none" id="tsBadge"><span class="ts-icon">⏳</span><span id="tsCount">0</span></div>
+      <div class="qi-display" title="Квантовые Слитки" style="display:none" id="qiBadge"><span class="qi-icon">💠</span><span id="qiCount">0</span></div>
+    </div>
+    <div class="header-right">
+      <div class="tech-pts-badge">🔬 <span id="techPts">0</span> TP</div>
+      <div class="streak-badge" id="streakBadge" style="display: flex;">🔥 <span id="streakCount">1</span> день</div>
+      <div class="audio-controls">
+        <button class="btn-icon" id="musicBtn" title="Музыка">🎵</button>
+        <input type="range" id="musicVol" min="0" max="1" step="0.05" value="0.22">
+        <button class="btn-icon" id="sfxBtn" title="Звуки">🔊</button>
+      </div>
+      <button class="btn-tech" id="terminalBtn" style="background: rgba(0, 255, 0, 0.15); color: #0f0; border-color: rgba(0, 255, 0, 0.3);">💻 Терминал</button>
+      <button class="btn-tech" id="advisorsBtn" style="background: rgba(168, 85, 247, 0.15); color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">🦸
+        Герои</button>
+      <button class="btn-tech" id="gridBtn" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">🏙️
+        План Города</button>
+      <button class="btn-tech" id="techBtn">🔬 Технологии</button>
+      <button class="btn-artifacts" id="expeditionsBtn" style="display:none; background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">🚀
+        Экспансия</button>
+      <button class="btn-artifacts" id="artifactsBtn" style="display:none">🌌 Артефакты</button>
+      <button class="btn-stats" id="statsBtn">📊 Статистика</button>
+      <button class="btn-lb" id="lbBtn">🏆 Рекорды</button>
+      <button class="btn-save" id="saveBtn">💾</button>
+      <button class="btn-reset" id="resetBtn">🔄</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <section class="clicker-section">
+      <div class="clicker-card">
+        <h2 class="section-title">Добыча монет</h2>
+        <div class="clicker-area">
+          <button class="coin-btn" id="coinBtn">
+            <div class="coin-inner"><span class="coin-emoji"></span></div>
+          </button>
+          <div class="combo-display" id="comboDisplay"></div>
+          <p class="click-hint">Клик = <span id="coinsPerClick">1</span> монет</p>
+        </div>
+        <div class="upgrades-section">
+          <h3 class="upgrades-title">⚡ Улучшения</h3>
+          <div class="upgrades-list" id="upgradesList"></div>
+        </div>
+      </div>
+      <div class="achievements-card">
+        <h3 class="section-title">🏆 Достижения</h3>
+        <div class="achievements-grid" id="achievementsGrid"></div>
+      </div>
+      <div class="quests-card">
+        <h3 class="section-title">📋 Квесты</h3>
+        <div class="quests-list" id="questsList"></div>
+      </div>
+      <div class="prestige-card" id="prestigeCard" style="display:none">
+        <h3 class="prestige-title">✨ Престиж</h3>
+        <p class="prestige-desc">Сброс + <strong>+25% к доходу навсегда</strong></p>
+        <div class="prestige-multiplier">Бонус: <span id="prestigeMult">x1.00</span></div>
+        <button class="btn-prestige" id="prestigeBtn">Выполнить Престиж ✨</button>
+      </div>
+      <div class="ascension-card" id="ascensionCard" style="display:none">
+        <h3 class="ascension-title">🌌 Вознесение</h3>
+        <p class="ascension-desc">Сброс ВСЕГО игры ради <strong>Осколков Времени</strong></p>
+        <button class="btn-ascension" id="ascensionBtn">Вознестись ⏳</button>
+      </div>
+    </section>
+
+    <section class="city-section">
+      <div class="city-header">
+        <h2 class="section-title">🌆 Твой город</h2>
+        <div class="city-stats">
+          <span id="seasonDisplay">🌸 Весна</span>
+          <span id="weatherDisplay">☀️ Ясно</span>
+          <span id="timeDisplay">☀️ 8:00</span>
+          <span>👥 <strong id="population">0</strong></span>
+          <span>Ур. <strong id="cityLevel">1</strong></span>
+        </div>
+      </div>
+      <div class="alerts-area">
+        <div class="disaster-banner" id="disasterBanner" style="display:none">
+          <span id="disasterEmoji">🔥</span><span id="disasterText">Бедствие!</span>
+          <span class="alert-timer" id="disasterTimer"></span>
+        </div>
+        <div class="event-banner" id="eventBanner" style="display:none">
+          <span id="eventEmoji">🎪</span><span id="eventText">Событие!</span>
+          <span class="alert-timer" id="eventTimer"></span>
+        </div>
+        <div class="boss-bar" id="bossBar" style="display:none">
+          <span class="boss-icon">👹</span>
+          <div class="boss-bar-inner">
+            <div class="boss-name-row"><span class="boss-name">Босс</span><span class="boss-hp-text">0/0</span></div>
+            <div class="boss-hp-track">
+              <div class="boss-hp-fill" style="width:100%"></div>
+            </div>
+          </div>
+          <span class="boss-hint">Кликай на него!</span>
+        </div>
+      </div>
+      <div class="city-canvas-wrapper">
+        <canvas id="cityCanvas"></canvas>
+        <div class="city-overlay-text" id="cityOverlay" style="opacity: 1;">Построй первое здание!</div>
+      </div>
+      <div class="float-container" id="floatContainer"></div>
+    </section>
+
+    <section class="right-panel">
+      <div class="stock-card" id="stockCard">
+        <h2 class="section-title">📉 Фондовая Биржа</h2>
+        <div class="stock-market" id="stockMarket"></div>
+      </div>
+
+      <div class="shop-section">
+        <h2 class="section-title">🏗️ Магазин зданий</h2>
+        <div class="buildings-list" id="buildingsList"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TERMINAL HACKING MODAL -->
+  <div class="modal-overlay" id="terminalOverlay" style="display:none">
+    <div class="modal modal-wide" style="border: 2px solid #0f0; box-shadow: 0 0 20px rgba(0,255,0,0.4); background: rgba(0,20,0,0.95);">
+      <div class="modal-header" style="border-bottom: 1px solid #0f0;">
+        <h2 style="color:#0f0;">💻 ТЕРМИНАЛ СИМУЛЯЦИИ</h2>
+        <button class="modal-close" id="terminalClose" style="color:#0f0;">✕</button>
+      </div>
+      <div id="terminalHackArea" style="padding: 20px;"></div>
+    </div>
+  </div>
+
+  <!-- ADVISORS GACHA MODAL -->
+  <div class="modal-overlay" id="advisorsOverlay" style="display:none">
+    <div class="modal modal-wide" style="border-color: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,0.4);">
+      <div class="modal-header" style="border-bottom-color: #a855f7;">
+        <h2 style="color:#e9d5ff;">🦸 КАПСУЛЫ ГЕРОЕВ</h2>
+        <button class="modal-close" id="advisorsClose" style="color:#e9d5ff;">✕</button>
+      </div>
+      <div style="padding: 15px; text-align:center; color:#cbd5e1;">Нанимайте Советников за Осколки Времени (⏳). Каждый
+        дает уникальный пассивный бонус.</div>
+      <div style="text-align:center; margin-bottom: 20px;">
+        <button class="btn-invest" id="rollAdvisorBtn" style="background: #a855f7; border-color: #d946ef; padding: 15px 30px; font-size: 16px;">Открыть Капсулу (15
+          ⏳)</button>
+      </div>
+      <div id="advisorsList" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; justify-content: center;">
+      </div>
+    </div>
+  </div>
+
+  <!-- DILEMMA MODAL -->
+  <div class="modal-overlay" id="dilemmaOverlay" style="display:none">
+    <div class="modal modal-dilemma">
+      <div class="modal-header">
+        <h2>⚖️ Выбор мэра</h2>
+      </div>
+      <p class="dilemma-question" id="dilemmaQ"></p>
+      <div class="dilemma-opts" id="dilemmaOpts"></div>
+    </div>
+  </div>
+
+  <!-- TECH MODAL -->
+  <div class="modal-overlay" id="techOverlay" style="display:none">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2>🔬 Дерево технологий</h2>
+        <div class="tech-pts-display">Очки: <strong id="techPtsModal">0</strong> TP</div>
+        <button class="modal-close" id="techClose">✕</button>
+      </div>
+      <div class="tech-grid" id="techGrid"></div>
+    </div>
+  </div>
+
+  <!-- ARTIFACTS MODAL -->
+  <div class="modal-overlay" id="artifactsOverlay" style="display:none">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2>🌌 Артефакты</h2>
+        <div class="modal-currency">У вас: <strong id="dmPtsModal">0</strong> 🌌 Темной Материи</div>
+        <button class="modal-close" id="artifactsClose">✕</button>
+      </div>
+      <p class="modal-subtitle">Артефакты сохраняются при обычном Престиже.</p>
+      <div class="tech-grid" id="artifactsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ASCENSION TREE MODAL -->
+  <div class="modal-overlay" id="ascensionOverlay" style="display:none">
+    <div class="modal modal-wide ascension-modal">
+      <div class="modal-header">
+        <h2>⏳ Божественное Древо</h2>
+        <div class="modal-currency">Осколков Времени: <strong id="tsPtsModal">0</strong> ⏳</div>
+        <button class="modal-close" id="ascensionClose">✕</button>
+      </div>
+      <p class="modal-subtitle text-warning">Навыки вознесения меняют игру навсегда.</p>
+      <div class="tech-grid" id="ascensionGrid"></div>
+      <div id="ascensionTierControls" style="margin-top:20px; text-align:center; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <h3 style="color:#facc15; margin-bottom: 10px;">Следующая Эпоха Богов</h3>
+        <p style="font-size:14px; color:#aaa; margin-bottom:15px;">Сбрось всё ради колоссального множителя x100 ко всем
+          видам дохода.</p>
+        <button id="ascensionTierBtn" class="btn-prestige text-warning" style="background:rgba(234, 179, 8, 0.1); border-color:#facc15;">Переход в Эпоху II (Требуется 5000
+          ⏳)</button>
+      </div>
+
+      <!-- GOD CHALLENGES SECTION -->
+      <div id="ascensionChallengesArea" style="margin-top:20px; text-align:center; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); display:none;">
+        <h3 style="color:#ef4444; margin-bottom: 10px;">⚡ Испытания Богов</h3>
+        <p style="font-size:14px; color:#aaa; margin-bottom:15px;">Выберите дебафф для следующего Вознесения. Пройдите
+          испытание (накопите <strong style="color:#facc15;">1.00Sp монет</strong>), чтобы получить уникальную награду.
+        </p>
+        <div id="challengesList" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+          <!-- JS fills this -->
+        </div>
+        <div id="activeChallengeDisplay" style="display:none; margin-top:15px; padding:10px; border:1px solid #ef4444; border-radius:8px; background:rgba(239,68,68,0.1);">
+          <div style="color:#ef4444; font-weight:bold; margin-bottom:5px;">Активно Испытание: <span id="activeChallengeName"></span></div>
+          <div style="font-size:12px; color:#ccc;" id="activeChallengeDesc"></div>
+          <button class="btn-invest" id="cancelChallengeBtn" style="margin-top:10px; background:#ef4444; border-color:#b91c1c;">Отменить (БЕЗ награды)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CITY GRID MODAL -->
+  <div class="modal-overlay" id="gridOverlay" style="display:none">
+    <div class="modal modal-wide" style="display:flex; flex-direction:row; gap:20px; max-width: 800px;">
+
+      <div style="flex: 2;">
+        <div class="modal-header">
+          <h2>🏙️ План Города (Синергии)</h2>
+          <button class="modal-close" id="gridClose">✕</button>
+        </div>
+        <p class="modal-subtitle">Размещайте голограммы зданий на сетке. Соседство дает бонусы к доходу!</p>
+        <div id="gridBoard" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 5px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+          <!-- JS fills this 5x5 -->
+        </div>
+        <div style="margin-top:15px; color:#10b981; font-weight:bold; font-size:14px;" id="gridTotalBonus">
+          Глобальный Множитель: x1.00
+        </div>
+      </div>
+
+      <div style="flex: 1; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px; display:flex; flex-direction:column;">
+        <h3 style="color:#38bdf8; margin-bottom:10px;">Доступно для размещения:</h3>
+        <p style="font-size:12px; color:#aaa; margin-bottom:10px;">Кликните на здание здесь, затем на пустую ячейку
+          слева.</p>
+        <div id="gridInventory" style="flex-grow:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+          <!-- JS fills this -->
+        </div>
+        <button class="btn-invest" id="gridClearBtn" style="margin-top:15px; background:rgba(239,68,68,0.2); border-color:#ef4444; color:#ef4444;">Очистить
+          Сетку</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- EXPEDITIONS & RELICS MODAL -->
+  <div class="modal-overlay" id="expeditionsOverlay" style="display:none">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <h2>🚀 Галактическая Экспансия</h2>
+        <div class="modal-currency">Квантовых Слитков: <strong id="qiPtsModal">0</strong> 💠</div>
+        <button class="modal-close" id="expeditionsClose">✕</button>
+      </div>
+      <div class="expd-tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+        <button class="btn-tab active" id="tabExpBtn" style="flex:1; padding:10px; border:none; background:rgba(255,255,255,0.1); color:#fff; cursor:pointer; border-radius:4px;">Флоты
+          Экспансии</button>
+        <button class="btn-tab" id="tabRelicBtn" style="flex:1; padding:10px; border:none; background:transparent; color:#aaa; cursor:pointer; border-radius:4px;">Кузня
+          Реликвий</button>
+        <button class="btn-tab" id="tabFactionBtn" style="flex:1; padding:10px; border:none; background:transparent; color:#aaa; cursor:pointer; border-radius:4px;">Синдикаты</button>
+        <button class="btn-tab" id="tabConquestBtn" style="flex:1; padding:10px; border:none; background:transparent; color:#aaa; cursor:pointer; border-radius:4px;">🌌
+          Захват</button>
+      </div>
+
+      <div id="viewExp" class="view-panel active">
+        <p class="modal-subtitle">Отправляйте флотилии на долгие экспедиции за ценными ресурсами.</p>
+        <div class="tech-grid" id="expGrid"></div>
+      </div>
+
+      <div id="viewRelic" class="view-panel" style="display:none;">
+        <p class="modal-subtitle">Используйте 💠 Квантовые Слитки для бесконечного улучшения Реликвий.</p>
+        <div class="tech-grid" id="relicGrid"></div>
+      </div>
+
+      <div id="viewFaction" class="view-panel" style="display:none;">
+        <p class="modal-subtitle text-warning">Выберите свой путь. Сменить фракцию можно только после Вознесения.</p>
+        <div class="tech-grid" id="factionGrid"></div>
+      </div>
+
+      <div id="viewConquest" class="view-panel" style="display:none;">
+        <p class="modal-subtitle">Отправляйте отряды на планеты. При 100% влияния планета захвачена и даёт постоянный
+          бонус.</p>
+        <div id="conquestGrid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:10px;">
+          <!-- JS fills this -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS MODAL -->
+  <div class="modal-overlay" id="statsOverlay" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>📊 Статистика</h2>
+        <div class="save-io">
+          <button class="btn-export" id="exportBtn">📤 Экспорт</button>
+          <button class="btn-export" id="importBtn">📥 Импорт</button>
+        </div>
+        <button class="modal-close" id="statsClose">✕</button>
+      </div>
+      <div class="stats-content" id="statsContent"></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD MODAL -->
+  <div class="modal-overlay" id="lbOverlay" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🏆 Таблица рекордов</h2><button class="modal-close" id="lbClose">✕</button>
+      </div>
+      <div class="lb-name-row">
+        <input type="text" id="playerName" placeholder="Твоё имя..." maxlength="20">
+        <button class="btn-lb-name" id="saveName">Сохранить</button>
+      </div>
+      <div class="lb-table" id="lbTable"></div>
+    </div>
+  </div>
+
+  <!-- DAILY BONUS MODAL -->
+  <div class="modal-overlay" id="dailyOverlay" style="display:none;">
+    <div class="modal modal-daily">
+      <div class="daily-icon" id="dailyIcon">🎉</div>
+      <h2 class="daily-title">Ежедневный бонус!</h2>
+      <p class="daily-desc" id="dailyDesc">+100 монет за вход!</p>
+      <div class="daily-streak" id="dailyStreakDisp">🔥 Серия: 1 день</div>
+      <button class="btn-daily" id="dailyClose">Забрать! 🎉</button>
+    </div>
+  </div>
+
+  <!-- CUSTOM CONFIRM MODAL -->
+  <div class="modal-overlay" id="confirmOverlay" style="display:none; z-index: 10000;">
+    <div class="modal" style="max-width:350px; text-align:center;">
+      <h2 id="confirmTitle">Подтверждение</h2>
+      <p id="confirmMsg" style="margin: 15px 0; color: #cbd5e1;"></p>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-invest" id="confirmOk" style="flex:1; background:#ef4444; border-color:#b91c1c;">Да</button>
+        <button class="btn-invest" id="confirmCancel" style="flex:1; background:#334155; border-color:#1e293b;">Нет</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body></html>
